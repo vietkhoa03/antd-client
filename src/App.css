@@ -1,0 +1,50 @@
+.loginPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .loginForm {
+    width: 350px;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .ant-typography {
+    margin-bottom: 20px;
+  }
+  
+  .ant-form-item {
+    text-align: left;
+  }
+  
+  .Sociallogin {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+  }
+  
+  .socialIcon {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .socialIcon:hover {
+    transform: scale(1.2);
+  }
+  
+  .FacebookFilled {
+    color: #1877f2 !important;
+  }
+  
+  .GoogleOutlined {
+    color: #db4437 !important;
+  }
+  
