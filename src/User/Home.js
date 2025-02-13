@@ -6,31 +6,55 @@ import React, { useEffect, useState } from "react";
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
-const Users = () => {
+const Home = () => {
   const [users, setUsers] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [form] = Form.useForm();
-
+  const token = localStorage.getItem("token");
   const fetchUsers = async () => {
-    const response = await axios.get(
-      "https://admin-dev.oneship.com.vn/api/v1/admin/admins"
-    );
-    setUsers(response.data);
-    console.log("??", response);
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        "https://admin-dev.oneship.com.vn/api/v1/admin/admins",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("Users:", response);
+      setUsers(response.data.data.items);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
   };
 
   const handleAddOrEditUser = async (values) => {
     if (currentUser) {
-      await axios.put(
-        "https://admin-dev.oneship.com.vn/api/v1/admin/admins/{id}",
-        values
+      await axios.patch(
+        `https://admin-dev.oneship.com.vn/api/v1/admin/admins/${currentUser.id}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     } else {
       await axios.post(
         "https://admin-dev.oneship.com.vn/api/v1/admin/admins",
-        values
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
     }
     setIsModalVisible(false);
@@ -55,9 +79,8 @@ const Users = () => {
   );
 
   const columns = [
-    { title: "UserName", dataIndex: "username", key: "username" },
-    // { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Password", dataIndex: "password", key: "password" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Email", dataIndex: "email", key: "email" },
     {
       title: "Action",
       key: "action",
@@ -79,7 +102,6 @@ const Users = () => {
       ),
     },
   ];
-
   const passwordRules = [
     { required: true, message: "Password is required" },
     { min: 8, message: "Password must be at least 8 characters" },
@@ -100,7 +122,6 @@ const Users = () => {
       message: "Password must contain at least one special character",
     },
   ];
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Header>
@@ -145,24 +166,43 @@ const Users = () => {
             onFinish={handleAddOrEditUser}
             layout="vertical"
           >
-            <Form.Item
-              name="username"
-              label="Username"
-              rules={[{ required: true }]}
-            >
+            <Form.Item name="name" label="Name" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            {/* <Form.Item
+            <Form.Item
               name="email"
               label="Email"
               rules={[{ required: true, type: "email" }]}
             >
               <Input />
-            </Form.Item> */}
+            </Form.Item>
             <Form.Item name="password" label="Password" rules={passwordRules}>
               <Input.Password />
             </Form.Item>
             <Form.Item>
+              <Form.Item
+                name="status"
+                label="Status"
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                name="phone"
+                label="Phone"
+                rules={[{ required: true }]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item
+                name="roleId"
+                label="Role"
+                rules={[{ required: true }]}
+              >
+                <Input type="number" />
+              </Form.Item>
               <Button type="primary" htmlType="submit">
                 Submit
               </Button>
@@ -185,4 +225,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Home;
